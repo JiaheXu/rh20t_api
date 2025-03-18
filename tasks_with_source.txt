@@ -1,0 +1,144 @@
+1. Press the button from top to bottom MetaWorld
+2. Pull out a napkin SelfProposed
+3. Press three buttons from left to right in sequence RLBench
+4. Pick up a block on the left and move it to the right MetaWorld
+5. Approach and touch the side of a block MetaWorld
+6. Use the gripper to push a block from left to right MetaWorld
+7. Hold a block with the gripper and sweep it from left to right on the table MetaWorld
+8. Grab a block and place it at the designated location RLBench
+9. Take out one Hanoi block and throw it aside RLBench
+10. Place the handset of the telephone on the corresponding phone cradle RLBench
+11. Water the plant RLBench
+12. Push the soccer ball into the goal MetaWorld
+13. Place the block on the scale RLBench
+14. Remove the object from the scale RLBench 
+15. Play the drum SelfProposed
+16. Hit the pool ball RLBench
+17. Put the pen into the pen holder RLBench
+18. Play Jenga RLBench
+19. Play the first move as black in the upper right corner of the Go board SelfProposed
+20. Turn on the desk lamp by pressing the button RLBench
+21. Turn off the desk lamp by pressing the button RLBench
+22. Wave the flag SelfProposed
+23. Turn on the power strip by pressing the button SelfProposed
+24. Turn off the power strip by pressing the button SelfProposed
+25. Unfold a piece of paper SelfProposed
+26. Use the gripper to push and close the drawer MetaWorld
+28. Grasp the handle and close the drawer RLBench
+29. Grasp the handle and open the drawer RLBench
+30. Pour out the test tube SelfProposed
+31. Cover the box MetaWorld
+32. Slide the outer casing onto the gift box SelfProposed
+33. Grasp one block to sweep the other block onto the mark MetaWorld
+34. Stack the squares into a pyramid shape RLBench
+35. Pick up one small block RLBench
+36. Shake the test tube SelfProposed
+37. Stack the blocks in a vertical line of five RLBench
+38. Pick up the cup RLBench
+39. Pour the water from one cup intoanother empty cup RLBench
+40. Stack the cups RLBench
+41. Clean the tabletop with a sponge RLBench
+42. Screw the lid onto the jar RLBench
+43. Unscrew the lid from the jar RLBench
+44. Pick up a bag of things SelfProposed
+45. Hang the brush on the pen rack SelfProposed
+46. Hang the cup on the cup rack RLBench
+47. Take the cup off the cup rack RLBench
+48. Rotate the steering wheel 90 degrees clockwise SelfProposed
+49. Rotate the steering wheel 90 degrees counterclockwise SelfProposed
+50. Put the dish on the dish rack SelfProposed
+51. Take the dish off the dish rack SelfProposed
+52. Grab a basketball, release it and shoot it into the basket MetaWorld
+53. Use a clamp MetaWorld
+54. Catch the moving object SelfProposed
+55. Transfer liquid using a dropper SelfProposed
+56. Receive something handed over by a human SelfProposed
+57. Turn on the four buttons on the power strip SelfProposed
+58. Turn off the four buttons on the power strip SelfProposed
+59. Turn the knob to increase the volume of a speaker SelfProposed
+60. Turn the knob to decrease the volume of the speaker SelfProposed
+61. Take everything out of the gift box SelfProposed
+62. Put the toilet paper on its holder SelfProposed
+63. Use a shovel to scoop up an object SelfProposed
+64. Take the toilet paper off its holder SelfProposed
+65. Build with small Lego blocks SelfProposed
+66. Build with large Megabloks SelfProposed
+67. Press a button from top to bottom with obstacles MetaWorld
+68. Press a button horizontally with obstacles MetaWorld
+69. Assemble one piece of a puzzle RLBench
+70. Open a sliding window MetaWorld
+71. Close a sliding window MetaWorld
+72. Drop coins into a piggy bank SelfProposed
+73. Put things in the drawer RLBench
+74. Press the button horizontally MetaWorld
+75. Finish setting up the starting position of a chessboard that is almost arranged SelfProposed
+76. Stack blocks (small Lego) one on top of the other every time SelfProposed
+77. Stack blocks (small Lego) randomly one at a time SelfProposed
+78. Close the microwave door RLBench
+79. Open the microwave door RLBench
+80. Flip over and spread out the paper that is laid flat on the table SelfProposed
+81. Unfold the leg of the glasses (with one hand) SelfProposed
+82. Scoop water with a large spoon from one bowl to another SelfProposed
+83. Swat with a flyswatter SelfProposed
+84. Assemble: Attach the bubble ring to the ball MetaWorld
+85. Remove the bubble ring from the assembled bubble ring and ball MetaWorld
+86. Dial a number on an old rotary phone MetaWorld
+88. Pick up and place an object with obstacles MetaWorld
+89. Push an object with obstacles MetaWorld
+90. Approach and touch an object with obstacles MetaWorld
+91. Move an object from one box to another MetaWorld
+92. Turn the hands of a clock RLBench
+93. Put the photo frame on the bracket RLBench 
+94. Open a box RLBench
+95. Take the photo frame down from the bracket RLBench
+96. Take something out of a drawer RLBench
+100. Stir the beaker with a glass rod SelfProposed
+101. Clean the table with a cloth SelfProposed
+102. Scrub the table with a brush SelfProposed
+103. Drag the plate to the goal post after holding it down MetaWorld
+104. Drag the plate back after holding it down MetaWorld
+105. Put the object on the shelf MetaWorld
+106. Take the object down from the shelf MetaWorld
+107. Put the garbage in the trash can RLBench
+108. Sharpen the pencil with a pencil sharpener SelfProposed
+109. Insert the pencil into the pencil sharpener SelfProposed
+110. Take the pencil out from the pencil sharpener SelfProposed
+111. Put the object with the corresponding shape into the corresponding hole RLBench
+112. Plug in the charger to the socket SelfProposed
+116. Use the correction tape on paper SelfProposed
+118. Turn on the water tap MetaWorld
+119. Turn off the water tap MetaWorld
+120. Install the light bulb by rotating it RLBench
+121. Take out the light bulb by rotating it RLBench
+122. Put the knife on the cutting board RLBench
+123. Put the knife on the knife rack RLBench
+124. Push down the lever MetaWorld
+125. Pull up the lever MetaWorld
+126. Plug in the power cord to the socket SelfProposed
+127. Plug in the power cord of the desk lamp, turn on the socket, and light up the desk lamp SelfProposed
+128. Plug in the USB drive to the docking station RLBench
+129. Plug in the bulb holder with a bulb to the socket SelfProposed
+130. Plug in the bulb holder with a bulb to the socket and turn on the switch of the bulb SelfProposed
+131. Stack the blocks into a pyramid SelfProposed
+132. Stack the blocks into a cross shape SelfProposed
+200. Insert the tip of a large pipette into the holder for large pipette tips SelfProposed
+201. Insert the tip of a medium pipette into the holder for medium pipette tips SelfProposed
+202. Insert the tip of a small pipette into the holder for small pipette tips SelfProposed
+204. Transfer all large pipette tips from one holder to another holder for large pipette tips SelfProposed
+205. Chop the scallions SelfProposed
+206. Chop the green garlic SelfProposed
+207. Chop the chili peppers SelfProposed
+208. Slice the lotus root SelfProposed
+209. Slice the carrots SelfProposed
+210. Chop the onions SelfProposed
+211. Transfer all medium pipette tips from one rack to another holder for medium pipette tips SelfProposed
+212. Transfer all small pipette tips from one rack to another holder for small pipette tips SelfProposed
+213. Chop the orange SelfProposed
+215. Chop the potatoes SelfProposed
+216. Chop the cucumber into shreds SelfProposed
+217. Plug in the bulb holder to the socket SelfProposed
+218. Plug in the bulb holder to the socket, install the bulb, turn on the socket to light up the bulb SelfProposed
+222. Cover the pot with the lid RLBench
+223. Take the cups off the shelf and stack them together SelfProposed
+225. Put the bowl into the microwave SelfProposed
+329. Put the glass cup onto the shelf SelfProposed
