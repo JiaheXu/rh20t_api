@@ -136,6 +136,7 @@ class PointCloud:
             if serial in in_hand_serials or len(image_pairs[serial]) == 0:
                 if self.debug: self.logger.debug(f"[PointCloud] Met in-hand camera {serial}")
                 continue
+            # print("intrinsics: ", intrinsics)
             pcds.append(
                 self.rgbd_to_pointcloud(
                     serial[0].isalpha(),

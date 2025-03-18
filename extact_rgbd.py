@@ -428,15 +428,21 @@ def pcd_preprocess(scene_path:str, pcd_folder:str, vis_cfg:dict, logger:Logger):
     robot_configs = load_conf(vis_cfg["robot_configs"])
     dataloader = RH20TScene(scene_path, robot_configs)
     pointcloud = create_point_cloud_manager(logger, vis_cfg)
-    stopwatch = Stopwatch()
-    pointcloud.point_cloud_multi_frames(
-        image_pairs=dataloader.get_image_path_pairs_period(vis_cfg["time_interval"]),
-        in_hand_serials=dataloader.in_hand_serials,
-        intrinsics=dataloader.intrinsics,
-        extrinsics=dataloader.extrinsics_base_aligned,
-        write_folder=pcd_folder
-    )
-    logger.info(f"preprocessing finished in {stopwatch.split} seconds.")
+
+    print("start time:", dataloader.start_timestamp)
+    print("end time: ", dataloader.end_timestamp)
+    print("serials: ", dataloader.serials)
+    print("low_freq_time: ", dataloader.low_freq_timestamps)
+
+    # stopwatch = Stopwatch()
+    # pointcloud.point_cloud_multi_frames(
+    #     image_pairs=dataloader.get_image_path_pairs_period(vis_cfg["time_interval"]),
+    #     in_hand_serials=dataloader.in_hand_serials,
+    #     intrinsics=dataloader.intrinsics,
+    #     extrinsics=dataloader.extrinsics_base_aligned,
+    #     write_folder=pcd_folder
+    # )
+    # logger.info(f"preprocessing finished in {stopwatch.split} seconds.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -455,8 +461,6 @@ if __name__ == "__main__":
         vis_logger.error("No configuration file `./configs/default.yaml` existing!")
         exit(1)
     
-    if ARGS.preprocess:
-        pcd_preprocess(ARGS.scene_folder, ARGS.cache_folder, vis_cfg_dict, vis_logger)
-    else:
-        visualize(ARGS.scene_folder, ARGS.cache_folder, vis_cfg_dict, vis_logger)
+    pcd_preprocess(ARGS.scene_folder, ARGS.cache_folder, vis_cfg_dict, vis_logger)
+
 

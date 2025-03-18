@@ -106,7 +106,10 @@ class RH20TScene:
     def _load_calib(self):
         calib_timestamp = self.metadata["calib"]
         if calib_timestamp == -1: raise NotImplementedError
+
+        print("self._parent_folder: ", self._parent_folder)
         self._calib_path = os.path.join(self._parent_folder, "calib", str(calib_timestamp))
+        print("self._calib_path: ", self._calib_path)
         self._intrinsics = load_dict_npy(os.path.join(self._calib_path, "intrinsics.npy"))
         self._extrinsics = load_dict_npy(os.path.join(self._calib_path, "extrinsics.npy"))
         for _k in self._extrinsics: self._extrinsics[_k] = self._extrinsics[_k][0]
@@ -159,7 +162,8 @@ class RH20TScene:
     def _load_ft_base_aligned(self): 
         self._ft_base_aligned = load_dict_npy(os.path.join(self.folder, self._used_aligned_folder, "force_torque_base.npy"))
         sort_by_timestamp(self._ft_base_aligned)
-        if self._base_aligned_timestamps is None:
+        # print("line 165 self._base_aligned_timestamps: ", self._base_aligned_timestamps )
+        if self._base_aligned_timestamps is None or self._base_aligned_timestamps_in_serial is None:
             _t_v = []
             for _k in self._ft_base_aligned: _t_v.extend([(_item["timestamp"], _k, _i) for _i, _item in enumerate(self._ft_base_aligned[_k])])
             _t_v.sort()
@@ -167,26 +171,45 @@ class RH20TScene:
             self._base_aligned_timestamps_in_serial = [(_item[1], _item[2]) for _item in _t_v]
             
     def _load_tcp_base_aligned(self): 
+
+        # print("line 175 self._base_aligned_timestamps: ", self._base_aligned_timestamps )
         self._tcp_base_aligned = load_dict_npy(os.path.join(self.folder, self._used_aligned_folder, "tcp_base.npy"))
+
+        # print("!!!!!!!!!!!! _tcp_base_aligned: ", self._tcp_base_aligned)
         sort_by_timestamp(self._tcp_base_aligned)
-        if self._base_aligned_timestamps is None:
+        # print("!!!!!!!!!!!! _tcp_base_aligned sorted: ", self._tcp_base_aligned)
+        # print("self._base_aligned_timestamps: ", self._base_aligned_timestamps )
+        if self._base_aligned_timestamps is None or self._base_aligned_timestamps_in_serial is None:
             _t_v = []
             for _k in self._tcp_base_aligned: _t_v.extend([(_item["timestamp"], _k, _i) for _i, _item in enumerate(self._tcp_base_aligned[_k])])
             _t_v.sort()
+            # print("_t_v: ", _t_v)
             self._base_aligned_timestamps = [_item[0] for _item in _t_v]
             self._base_aligned_timestamps_in_serial = [(_item[1], _item[2]) for _item in _t_v]
+        # if self._base_aligned_timestamps_in_serial is None:
+
+        # print("self._base_aligned_timestamps_in_serial: ", self._base_aligned_timestamps_in_serial)
     
     def _load_joint_angles_aligned(self):
         self._joint_angles_aligned = load_dict_npy(os.path.join(self.folder, self._used_aligned_folder, "joint.npy"))
+        # print("line 195 self._base_aligned_timestamps: ", self._base_aligned_timestamps )
         if self._base_aligned_timestamps is None:
             _t_v = []
             for _k in self._joint_angles_aligned: _t_v.extend([(_t, _k) for _t in self._joint_angles_aligned[_k]])
             _t_v.sort()
+            # print("_t_v: ", _t_v)
             self._base_aligned_timestamps = [_item[0] for _item in  _t_v]
             self._base_aligned_timestamps_time_serial_pairs = _t_v
-    
+
+            # for _item in _t_v:
+            #     print("iems: ", _item[1], " ", _item[2])
+            # self._base_aligned_timestamps_in_serial = [(_item[1], _item[2]) for _item in _t_v]
+        # print("line 202 self._base_aligned_timestamps: ", self._base_aligned_timestamps )
+        # print("line 203 self._base_aligned_timestamps_in_serial: ", self._base_aligned_timestamps_in_serial )
+
     def _load_gripper(self):
         self._gripper = load_dict_npy(os.path.join(self.folder, self._used_aligned_folder, "gripper.npy"))
+        # print("line 205 self._base_aligned_timestamps: ", self._base_aligned_timestamps )
         if self._base_aligned_timestamps is None:
             _t_v = []
             for _k in self._gripper: _t_v.extend([(_t, _k) for _t in self._gripper[_k]])
@@ -460,7 +483,10 @@ class RH20TScene:
         return self._raw_cam_val_loss[value_field]
 
 
-    def get_audio_path(self): return os.path.join(self._folder, "audio_mixed", os.listdir(os.path.join(self._folder, "audio_mixed"))[0])
+    def get_audio_path(self): 
+        # print("prefix: ", self._folder, "audio_mixed")
+        # print("suffix: ", os.listdir(os.path.join(self._folder, "audio_mixed")))
+        return os.path.join(self._folder, "audio_mixed", os.listdir(os.path.join(self._folder, "audio_mixed"))[0])
         
     ############################## timestamp query methods ##############################
         
@@ -572,7 +598,12 @@ class RH20TScene:
             )
         if serial == "base":
             tcp_base_aligned = self.tcp_base_aligned
+            # print("tcp_base_aligned: ", tcp_base_aligned)
+            # print("592 self._base_aligned_timestamps: ", self._base_aligned_timestamps)
             _idx_1, _idx_2 = binary_search_closest_two_idx(self._base_aligned_timestamps, timestamp)
+            # print("_idx_1: ", _idx_1)
+            # print("_idx_2: ", _idx_2)
+            # print("596 _base_aligned_timestamps_in_serial: ", self._base_aligned_timestamps_in_serial)
             (serial_1, serial_idx_1) = self._base_aligned_timestamps_in_serial[_idx_1]
             (serial_2, serial_idx_2) = self._base_aligned_timestamps_in_serial[_idx_2]
             return interpolate_linear(

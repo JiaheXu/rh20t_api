@@ -40,18 +40,30 @@ def convert_depth(depth_file, depth_timestamps, dest_depth_dir, size = (1280, 72
     """
     width, height = size
     cap = cv2.VideoCapture(depth_file)
+    print("depth_file: ", depth_file)
     cnt = 0
     is_l515 = ("cam_f" in depth_file)
     while True:
         ret, frame = cap.read()
+        print("ret: ", ret)
         if ret:
+            print("???")
+            print("size: ", size)
+            print("frame: ", frame.shape)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray1 = np.array(gray[:height, :]).astype(np.int32)
+            print("line 53")
             gray2 = np.array(gray[height:, :]).astype(np.int32)
+            print("line 54")
+            print("before: ", gray.shape)
+            print("gray1: ", gray1.shape)
             gray = np.array(gray2 * 256 + gray1).astype(np.uint16)
+            print("after: ", gray.shape)
+            print("line 55")
             if is_l515:
                 gray = gray * 4
             cv2.imwrite(os.path.join(dest_depth_dir, '{}.png'.format(depth_timestamps[cnt])), gray)
+            print("dest_depth_dir: ", os.path.join(dest_depth_dir, '{}.png'.format(depth_timestamps[cnt])))
             cnt += 1
         else:
             break
@@ -140,10 +152,10 @@ def convert_rh20t(root_dir, dest_dir, depth_dir = None, num_workers = 20):
 if __name__ == '__main__':
     # 1. For full version (or ignore depth_dir if no depth usage)
     convert_rh20t(
-        root_dir = "/path/to/RH20T/", 
-        dest_dir = "/path/to/destination/RH20T/", 
-        depth_dir = "/path/to/RH20T_depth/",
-        num_workers = 20
+        root_dir = "/media/jiahe/data/RH20T_rgb_resized/", 
+        dest_dir = "/media/jiahe/data/RH20T_rgb_resized/", 
+        depth_dir = "/media/jiahe/data/RH20T_depth_resized/",
+        num_workers = 1
     )
     """
     # 2. For resized version.

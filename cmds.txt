@@ -1,0 +1,4 @@
+SCENE_FOLDER=/media/jiahe/data/20T/RH20T_cfg3/task_0001_user_0016_scene_0001_cfg_0003
+CACHE_FOLDER=./
+python3 visualize.py --scene_folder $SCENE_FOLDER --cache_folder $CACHE_FOLDER --preprocess
+
