@@ -193,7 +193,7 @@ class RH20TScene:
     def _load_joint_angles_aligned(self):
         self._joint_angles_aligned = load_dict_npy(os.path.join(self.folder, self._used_aligned_folder, "joint.npy"))
         # print("line 195 self._base_aligned_timestamps: ", self._base_aligned_timestamps )
-        if self._base_aligned_timestamps is None:
+        if self._base_aligned_timestamps is None or self._base_aligned_timestamps_time_serial_pairs is None:
             _t_v = []
             for _k in self._joint_angles_aligned: _t_v.extend([(_t, _k) for _t in self._joint_angles_aligned[_k]])
             _t_v.sort()
@@ -210,7 +210,7 @@ class RH20TScene:
     def _load_gripper(self):
         self._gripper = load_dict_npy(os.path.join(self.folder, self._used_aligned_folder, "gripper.npy"))
         # print("line 205 self._base_aligned_timestamps: ", self._base_aligned_timestamps )
-        if self._base_aligned_timestamps is None:
+        if self._base_aligned_timestamps is None or self._base_aligned_timestamps_time_serial_pairs is None:
             _t_v = []
             for _k in self._gripper: _t_v.extend([(_t, _k) for _t in self._gripper[_k]])
             _t_v.sort()

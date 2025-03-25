@@ -23,6 +23,181 @@ import librosa
 import librosa.display
 from typing import Dict, Any
 import traceback
+from PIL import Image
+from pathlib import Path
+import open3d as o3d
+import copy
+import cv2
+from numpy.linalg import inv
+
+def visualize_pcd(pcd, traj_lists = None, curr_pose = None, drawlines = False):
+
+    coor_frame = o3d.geometry.TriangleMesh.create_coordinate_frame()
+    vis = o3d.visualization.VisualizerWithKeyCallback()
+    vis.create_window()
+    coor_frame.scale(0.1, center=(0., 0., 0.))
+    vis.add_geometry(coor_frame)
+    vis.get_render_option().background_color = np.asarray([255, 255, 255])
+
+    view_ctl = vis.get_view_control()
+
+    vis.add_geometry(pcd)
+
+    mesh = o3d.geometry.TriangleMesh.create_coordinate_frame()
+    mesh.scale(0.1, center=(0., 0., 0.) )
+    # if(use_arrow):
+    #     mesh = o3d.geometry.TriangleMesh.create_arrow( cylinder_radius=0.01, cone_radius=0.01, cylinder_height=0.005, cone_height=0.01, resolution=20, cylinder_split=4, cone_split=1 )
+    # print("curr_pose: ", curr_pose)
+    if(traj_lists is not None):
+
+        for traj_idx ,traj in enumerate( traj_lists, 0 ):
+            points = [ [0,0,0] ]
+            lines = []
+            colors = []
+            if(curr_pose is not None):
+                points.append( curr_pose[traj_idx][0:3,3] )
+                lines.append( [ len(points) - 1 , len(points) - 2])
+                colors.append( [1,0,0] )
+            for node_idx, point in enumerate( traj , 0 ):
+                new_mesh = copy.deepcopy(mesh).transform(point)
+                vis.add_geometry(new_mesh)
+                if drawlines:
+                    points.append(point[0:3,3])
+                    lines.append( [ len(points) - 1 , len(points) - 2])
+                    colors.append( [1,0,0] )
+
+
+            
+            if drawlines:
+                # lines.append( [ 0, len(points)])
+                # colors.append( [1,0,0] )
+                # print("points: ", len(points))
+                # print("lines: ", lines)
+                line_set = o3d.geometry.LineSet(
+                    points=o3d.utility.Vector3dVector(points),
+                    lines=o3d.utility.Vector2iVector(lines),
+                )
+                line_set.colors = o3d.utility.Vector3dVector(colors)
+                vis.add_geometry(line_set)
+                # o3d.visualization.draw_geometries([line_set])
+
+    if(curr_pose is not None):
+        for pose in curr_pose:
+            curr_mesh = o3d.geometry.TriangleMesh.create_coordinate_frame()
+            curr_mesh.scale(0.05, center=(0., 0., 0.) )
+            curr_mesh = curr_mesh.transform(pose)
+            vis.add_geometry(curr_mesh)
+
+    view_ctl.set_up((1, 0, 0))  # set the positive direction of the x-axis as the up direction
+    view_ctl.set_front((-0.3, 0.0, 0.2))  # set the positive direction of the x-axis toward you
+    view_ctl.set_lookat((0.0, 0.0, 0.3))  # set the original point as the center point of the window
+    vis.run()
+    vis.destroy_window()
+
+def get_intrinsic_o3d(K, width, height):
+
+    # Example NumPy intrinsic matrix (3x3)
+    # K = np.array([[525.0,   0.0, 320.0],  # fx,  0, cx
+    #             [  0.0, 525.0, 240.0],  #  0, fy, cy
+    #             [  0.0,   0.0,   1.0]]) #  0,  0,  1
+
+    # Image width and height (update based on your data)
+
+
+    # Convert to Open3D PinholeCameraIntrinsic
+    intrinsic_o3d = o3d.camera.PinholeCameraIntrinsic(
+        width, height, 0.5 * K[0, 0], 0.5 * K[1, 1], 0.5 * K[0, 2], 0.5 * K[1, 2]
+    )
+
+    return intrinsic_o3d
+
+def xyz_from_depth(depth_image, depth_intrinsic, depth_extrinsic, depth_scale=1000.):
+    # Return X, Y, Z coordinates from a depth map.
+    # This mimics OpenCV cv2.rgbd.depthTo3d() function
+    fx = depth_intrinsic[0, 0]
+    fy = depth_intrinsic[1, 1]
+    cx = depth_intrinsic[0, 2]
+    cy = depth_intrinsic[1, 2]
+    # Construct (y, x) array with pixel coordinates
+    y, x = np.meshgrid(range(depth_image.shape[0]), range(depth_image.shape[1]), sparse=False, indexing='ij')
+
+    X = (x - cx) * depth_image / (fx * depth_scale)
+    Y = (y - cy) * depth_image / (fy * depth_scale)
+    ones = np.ones( ( depth_image.shape[0], depth_image.shape[1], 1) )
+    xyz = np.stack([X, Y, depth_image / depth_scale], axis=2)
+    xyz[depth_image == 0] = 0.0
+
+    # print("xyz: ", xyz.shape)
+    # print("ones: ", ones.shape)
+    # print("depth_extrinsic: ", depth_extrinsic.shape)
+    xyz = np.concatenate([xyz, ones], axis=2)
+    xyz =  xyz @ np.transpose( depth_extrinsic)
+    xyz = xyz[:,:,0:3]
+    return xyz
+
+def pointcloud_to_depthmap(points, img_size, K):
+    """
+    Converts a point cloud to a depth map.
+
+    Args:
+        points (numpy.ndarray): Nx3 array of (X, Y, Z) coordinates.
+        img_size (tuple): (height, width) of the depth image.
+        K (numpy.ndarray): 3x3 camera intrinsic matrix.
+
+    Returns:
+        depth_map (numpy.ndarray): Depth map with shape (height, width).
+    """
+
+    height, width = img_size
+    depth_map = np.full((height, width), np.inf)  # Initialize with infinity
+
+    # Project 3D points to 2D
+    X, Y, Z = points[:, 0], points[:, 1], points[:, 2]
+
+    # Avoid division by zero
+    Z[Z <= 0] = 1e-6
+
+    # Camera intrinsic projection: u = (fx * X / Z) + cx, v = (fy * Y / Z) + cy
+    u = (K[0, 0] * X / Z) + K[0, 2]
+    v = (K[1, 1] * Y / Z) + K[1, 2]
+
+    # Round to nearest pixel coordinates
+    u = np.round(u).astype(int)
+    v = np.round(v).astype(int)
+
+    # Filter points that are within image bounds
+    valid = (u >= 0) & (u < width) & (v >= 0) & (v < height)
+
+    # Update depth map with the nearest depth value
+    for i in np.where(valid)[0]:
+        if Z[i] < depth_map[v[i], u[i]]:
+            depth_map[v[i], u[i]] = Z[i]
+
+    # Replace inf values with 0 (or max depth if desired)
+    depth_map[depth_map == np.inf] = 0
+
+    return depth_map
+
+def get_resized_intrinsic(intrinsic_np , original_shape, new_shape):
+    height, width = original_shape[0], original_shape[1]
+    h_rate = new_shape[0] / height
+    w_rate = new_shape[1] / width
+    new_intrinsic_np = copy.deepcopy(intrinsic_np)
+    new_intrinsic_np[0][0] *= w_rate
+    new_intrinsic_np[0][2] *= w_rate
+    new_intrinsic_np[1][1] *= h_rate
+    new_intrinsic_np[1][2] *= h_rate
+    return new_intrinsic_np
+
+
+def transfer_camera_param( rgb, depth, intrinsic_np, resized_intrinsic_np, resized_img_size):
+    
+
+    processed_rgb = cv2.resize(rgb, resized_img_size)
+
+    processed_depth = cv2.resize(depth, resized_img_size, interpolation =cv2.INTER_NEAREST)
+
+    return processed_rgb, processed_depth
 
 def get_trans_mat(start_coord:np.ndarray, end_coord:np.ndarray):
     """
@@ -423,40 +598,186 @@ def visualize(scene_path:str, pcd_folder:str, vis_cfg:dict, logger:Logger):
     
     logger.info(f"Average time: {_vis_time / max(_n_frames,1):.3f} s")
     logger.info(f"Average FPS: {_n_frames / max(_vis_time, 0.01):.3f}")
+def get_filtered_depth(rgb, depth, intrinsic, extrinsic, resized_intrinsic, resized_img_size = ( 256, 256 )):
+            
+    height, width = rgb.shape[0], depth.shape[1]
+    rgb, depth = transfer_camera_param(rgb, depth, intrinsic, resized_intrinsic, resized_img_size)
+    
+    # save_np_image(rgb)
+    min_depth_m = 0.3 * 1000
+    max_depth_m = 1.2 * 1000
 
-def pcd_preprocess(scene_path:str, pcd_folder:str, vis_cfg:dict, logger:Logger):
+    depth[depth < min_depth_m] = 0
+    depth[depth > max_depth_m] = 0
+
+    xyz = xyz_from_depth(depth, resized_intrinsic, inv(extrinsic) )
+    xyz_2d = xyz.reshape( -1, 3)
+    rgb_2d = rgb.reshape( -1, 3) / 255.0
+    pcd = o3d.geometry.PointCloud()
+    # Convert NumPy array to Open3D format using Vector3dVector
+    pcd.points = o3d.utility.Vector3dVector(xyz_2d)
+    pcd.colors = o3d.utility.Vector3dVector(rgb_2d)
+
+    nb_neighbors = 200
+    radius = 0.1
+    cl, ind = pcd.remove_statistical_outlier(nb_neighbors=nb_neighbors,
+                                            std_ratio=1.5)
+    all_indices = np.full( (xyz_2d.shape[0]), False, dtype=bool)
+    all_indices[ind] = True
+    invalid_indices_1 = np.where( all_indices == False)
+    xyz_2d[invalid_indices_1] = np.array([0., 0., 0.])
+    valid_pcd = o3d.geometry.PointCloud()
+    valid_pcd.points = o3d.utility.Vector3dVector(xyz_2d)
+    # valid_pcd.colors = o3d.utility.Vector3dVector(rgb_2d)
+    # print("step1: ")
+    # visualize_pcd( valid_pcd )
+    nb_points = 400
+    _, ind = valid_pcd.remove_radius_outlier(nb_points=nb_points, radius=radius)
+    all_indices = np.full( (xyz_2d.shape[0]), False, dtype=bool)
+    all_indices[ind] = True
+    invalid_indices_2 = np.where( all_indices == False)
+    xyz_2d[invalid_indices_2] = np.array([0., 0., 0.])
+    # clean_pcd = o3d.geometry.PointCloud()
+    # clean_pcd.points = o3d.utility.Vector3dVector(xyz_2d)
+    # clean_pcd.colors = o3d.utility.Vector3dVector(rgb_2d)
+    # print("step2: ")
+    # visualize_pcd( clean_pcd )
+
+    valid_map = np.full( (xyz_2d.shape[0]), True, dtype=bool)
+    valid_map[invalid_indices_1] = False
+    valid_map[invalid_indices_2] = False
+    valid_map = valid_map.reshape( (xyz.shape[0], xyz.shape[1]) )
+    filtered_depth = copy.deepcopy(depth)
+    filtered_depth[ valid_map==False ] = 0.0
+    
+    return rgb, filtered_depth
+
+def data_preprocess(scene_path:str, save_data_dir:str, idx: int, task_num: int, task_lang:str, goal_cams:list, vis_cfg:dict, train_set:bool, time_interval = 200): #, logger:Logger):
+    
+    print("processing data: ", idx)
     robot_configs = load_conf(vis_cfg["robot_configs"])
+
     dataloader = RH20TScene(scene_path, robot_configs)
-    pointcloud = create_point_cloud_manager(logger, vis_cfg)
-
-
-    print("start time:", dataloader.start_timestamp)
-    print("end time: ", dataloader.end_timestamp)
-    print("hand serials: ", dataloader.in_hand_serials)
     hand_cam_serial = dataloader.in_hand_serials[0]
-    time_interval = 200
     data = dataloader.get_image_path_pairs_period(time_interval = time_interval)
+
+    extrinsics = dataloader.extrinsics_base_aligned
+    intrinsics = dataloader.intrinsics
+    
+    resized_img_size = ( 256, 256 )
+
+    ep = {}
+    timestamps = []
+    ee_poses = []
+    gripper_cmds = []
+    rgbds = []
+    if(len(data) < 20 ):
+        return
+    resized_intrinsics = {}
+
     for time_point in data:
-        print("item: ",time_point[hand_cam_serial])
+        # print("time_point: ", time_point['timestamp'])
+        timestamp = time_point['timestamp']
+        timestamps.append( timestamp )
+        
+        ee_pose = dataloader.get_tcp_aligned(timestamp = timestamp) #, serial:str="base")
+        ee_poses.append(ee_pose)
+        gripper_cmd = dataloader.get_gripper_command(timestamp = timestamp)
+        gripper_cmds.append( gripper_cmd )
 
-    # print("data: ", data[0].keys())
-    # print("low_freq_time: ", dataloader.low_freq_timestamps)
-    
-    
-    # .get_tcp_aligned(timestamp:int, serial:str="base")
-    # .get_gripper_command(timestamp:int)
+        rgbd = {}
 
+        for cam in goal_cams:
 
+            if( cam not in time_point.keys() or cam not in extrinsics.keys() or cam not in intrinsics.keys()):
+                continue
+            if( len(time_point[cam]) < 2): # 2 for depth and rgb
+                continue
+            # print("item: ",time_point[cam])
+            cam_time = int( time_point[cam][0][-17:-4] )
+            if( abs(timestamp - cam_time) > 200 ): # time diff too large
+                continue
 
-    # stopwatch = Stopwatch()
-    # pointcloud.point_cloud_multi_frames(
-    #     image_pairs=dataloader.get_image_path_pairs_period(vis_cfg["time_interval"]),
-    #     in_hand_serials=dataloader.in_hand_serials,
-    #     intrinsics=dataloader.intrinsics,
-    #     extrinsics=dataloader.extrinsics_base_aligned,
-    #     write_folder=pcd_folder
-    # )
-    # logger.info(f"preprocessing finished in {stopwatch.split} seconds.")
+            rgbd_dict = {}
+            img_path = time_point[cam]
+            file_path = Path(img_path[0])
+            if not file_path.exists():
+                return
+            img_path = time_point[cam]
+            file_path = Path(img_path[1])
+            if not file_path.exists():
+                return
+    for time_point in data:
+        print("time_point: ", time_point['timestamp'])
+        timestamp = time_point['timestamp']
+        timestamps.append( timestamp )
+        
+        ee_pose = dataloader.get_tcp_aligned(timestamp = timestamp) #, serial:str="base")
+        ee_poses.append(ee_pose)
+        gripper_cmd = dataloader.get_gripper_command(timestamp = timestamp)
+        gripper_cmds.append( gripper_cmd )
+
+        rgbd = {}
+
+        for cam in goal_cams:
+
+            if( cam not in time_point.keys() or cam not in extrinsics.keys() or cam not in intrinsics.keys()):
+                continue
+            if( len(time_point[cam]) < 2): # 2 for depth and rgb
+                continue
+            # print("item: ",time_point[cam])
+            cam_time = int( time_point[cam][0][-17:-4] )
+            if( abs(timestamp - cam_time) > 200 ): # time diff too large
+                continue
+
+            rgbd_dict = {}
+            img_path = time_point[cam]
+            # file_path = Path(img_path[0])
+            # if not file_path.exists():
+            #     return
+            # img_path = time_point[cam]
+            # file_path = Path(img_path[1])
+            # if not file_path.exists():
+            #     return
+
+            rgb_img = np.array( Image.open(img_path[0]) )
+            depth_img = np.array( Image.open(img_path[1]), dtype=np.uint16 )
+            depth_img = depth_img.astype(np.float64)
+
+            height, width = rgb_img.shape[0], rgb_img.shape[1]
+            intrinsic = intrinsics[cam]
+            extrinsic = extrinsics[cam]
+            intrinsic_o3d = get_intrinsic_o3d(intrinsic, width = width, height = height)
+            intrinsic_np = intrinsic_o3d.intrinsic_matrix
+
+            resized_intrinsic = get_resized_intrinsic( intrinsic_np , rgb_img.shape[0:2], resized_img_size)
+            # print("path: ", img_path)
+            resized_rgb, filtered_depth = get_filtered_depth(rgb_img, depth_img, intrinsic_np, extrinsic, resized_intrinsic, resized_img_size = ( 256, 256 ))
+
+            rgbd_dict['path'] = img_path
+            rgbd_dict['rgb'] = resized_rgb
+            rgbd_dict['depth'] = filtered_depth
+            rgbd[cam] = rgbd_dict
+            resized_intrinsics[cam] = resized_intrinsic
+
+        rgbds.append(rgbd)
+
+    ep['intrinsics'] = resized_intrinsics
+    ep['extrinsics'] = extrinsics
+    ep['hand_cam'] = dataloader.in_hand_serials[0]
+    ep['cams'] = goal_cams
+    ep['timestamps'] = timestamps
+    ep['ee_pose'] = ee_poses
+    ep['cmds'] = gripper_cmds
+    ep['rgbds'] = rgbds
+    ep['task_idx'] =  task_num
+    ep['language'] = task_lang
+    # ep['task_idx'] = task_idx
+    # np.save( os.path.join(save_data_dir, f'ep{idx}.npy'), ep, allow_pickle = True )
+    if(train_set):
+        np.save( os.path.join(save_data_dir + "/train/", f'ep{idx}.npy'), ep, allow_pickle = True )
+    else:
+        np.save( os.path.join(save_data_dir + "/eval/", f'ep{idx}.npy'), ep, allow_pickle = True )
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -475,6 +796,6 @@ if __name__ == "__main__":
         vis_logger.error("No configuration file `./configs/default.yaml` existing!")
         exit(1)
     
-    pcd_preprocess(ARGS.scene_folder, ARGS.cache_folder, vis_cfg_dict, vis_logger)
+    data_preprocess(ARGS.scene_folder, vis_cfg_dict)
 
 
