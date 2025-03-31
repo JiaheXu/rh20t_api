@@ -123,14 +123,14 @@ if __name__ == "__main__":
     print("task_number_map: ", task_number_map)
 
 
-    num = 3
+    num = 6
     print(f"Worker {num} started")
     eval_ration = 0.2
     current_folders = folders[ num*100 : (num+1)*100 ]
     np.random.seed(0)
     for idx, folder in enumerate( current_folders ):
-        # if(idx < 67):
-        #   continue
+        if(idx < 85):
+            continue
         train = np.random.uniform() > eval_ration
         
         ep_idx = num*100 + idx
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         task_lang = tasks_lang[task_num]
         # data_preprocess( os.path.join(directory_path,folder), save_data_dir, idx, task_num, task_lang, goal_cams, vis_cfg_dict, train)
         try:
-            data_preprocess( os.path.join(directory_path,folder), save_data_dir, ep_idx, task_num, task_lang, goal_cams, vis_cfg_dict, train)
+            data_preprocess( os.path.join(directory_path,folder), save_data_dir, ep_idx, task_num, task_lang, goal_cams, vis_cfg_dict, train, time_interval = 300)
         except:
             pass
     print(f"Worker {num} finished")

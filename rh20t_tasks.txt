@@ -1,0 +1,144 @@
+1. Press the button from top to bottom
+2. Pull out a napkin
+3. Press three buttons from left to right in sequence
+4. Pick up a block on the left and move it to the right
+5. Approach and touch the side of a block
+6. Use the gripper to push a block from left to right
+7. Hold a block with the gripper and sweep it from left to right on the table
+8. Grab a block and place it at the designated location
+9. Take out one Hanoi block and throw it aside
+10. Place the handset of the telephone on the corresponding phone cradle
+11. Water the plant
+12. Push the soccer ball into the goal
+13. Place the block on the scale
+14. Remove the object from the scale
+15. Play the drum
+16. Hit the pool ball
+17. Put the pen into the pen holder
+18. Play Jenga
+19. Play the first move as black in the upper right corner of the Go board
+20. Turn on the desk lamp by pressing the button
+21. Turn off the desk lamp by pressing the button
+22. Wave the flag
+23. Turn on the power strip by pressing the button
+24. Turn off the power strip by pressing the button
+25. Unfold a piece of paper
+26. Use the gripper to push and close the drawer
+28. Grasp the handle and close the drawer
+29. Grasp the handle and open the drawer
+30. Pour out the test tube
+31. Cover the box
+32. Slide the outer casing onto the gift box
+33. Grasp one block to sweep the other block onto the mark
+34. Stack the squares into a pyramid shape
+35. Pick up one small block
+36. Shake the test tube
+37. Stack the blocks in a vertical line of five
+38. Pick up the cup
+39. Pour the water from one cup intoanother empty cup
+40. Stack the cups
+41. Clean the tabletop with a sponge
+42. Screw the lid onto the jar
+43. Unscrew the lid from the jar
+44. Pick up a bag of things
+45. Hang the brush on the pen rack
+46. Hang the cup on the cup rack
+47. Take the cup off the cup rack
+48. Rotate the steering wheel 90 degrees clockwise
+49. Rotate the steering wheel 90 degrees counterclockwise
+50. Put the dish on the dish rack
+51. Take the dish off the dish rack
+52. Grab a basketball, release it and shoot it into the basket
+53. Use a clamp
+54. Catch the moving object
+55. Transfer liquid using a dropper
+56. Receive something handed over by a human
+57. Turn on the four buttons on the power strip
+58. Turn off the four buttons on the power strip
+59. Turn the knob to increase the volume of a speaker
+60. Turn the knob to decrease the volume of the speaker
+61. Take everything out of the gift box
+62. Put the toilet paper on its holder
+63. Use a shovel to scoop up an object
+64. Take the toilet paper off its holder
+65. Build with small Lego blocks
+66. Build with large Megabloks
+67. Press a button from top to bottom with obstacles
+68. Press a button horizontally with obstacles
+69. Assemble one piece of a puzzle
+70. Open a sliding window
+71. Close a sliding window
+72. Drop coins into a piggy bank
+73. Put things in the drawer
+74. Press the button horizontally
+75. Finish setting up the starting position of a chessboard that is almost arranged
+76. Stack blocks (small Lego) one on top of the other every time
+77. Stack blocks (small Lego) randomly one at a time
+78. Close the microwave door
+79. Open the microwave door
+80. Flip over and spread out the paper that is laid flat on the table
+81. Unfold the leg of the glasses (with one hand)
+82. Scoop water with a large spoon from one bowl to another
+83. Swat with a flyswatter
+84. Assemble: Attach the bubble ring to the ball
+85. Remove the bubble ring from the assembled bubble ring and ball
+86. Dial a number on an old rotary phone
+88. Pick up and place an object with obstacles
+89. Push an object with obstacles
+90. Approach and touch an object with obstacles
+91. Move an object from one box to another
+92. Turn the hands of a clock
+93. Put the photo frame on the bracket
+94. Open a box
+95. Take the photo frame down from the bracket
+96. Take something out of a drawer
+100. Stir the beaker with a glass rod
+101. Clean the table with a cloth
+102. Scrub the table with a brush
+103. Drag the plate to the goal post after holding it down
+104. Drag the plate back after holding it down
+105. Put the object on the shelf
+106. Take the object down from the shelf
+107. Put the garbage in the trash can
+108. Sharpen the pencil with a pencil sharpener
+109. Insert the pencil into the pencil sharpener
+110. Take the pencil out from the pencil sharpener
+111. Put the object with the corresponding shape into the corresponding hole
+112. Plug in the charger to the socket
+116. Use the correction tape on paper
+118. Turn on the water tap
+119. Turn off the water tap
+120. Install the light bulb by rotating it
+121. Take out the light bulb by rotating it
+122. Put the knife on the cutting board
+123. Put the knife on the knife rack
+124. Push down the lever
+125. Pull up the lever
+126. Plug in the power cord to the socket
+127. Plug in the power cord of the desk lamp, turn on the socket, and light up the desk lamp
+128. Plug in the USB drive to the docking station
+129. Plug in the bulb holder with a bulb to the socket
+130. Plug in the bulb holder with a bulb to the socket and turn on the switch of the bulb
+131. Stack the blocks into a pyramid
+132. Stack the blocks into a cross shape
+200. Insert the tip of a large pipette into the holder for large pipette tips
+201. Insert the tip of a medium pipette into the holder for medium pipette tips
+202. Insert the tip of a small pipette into the holder for small pipette tips
+204. Transfer all large pipette tips from one holder to another holder for large pipette tips
+205. Chop the scallions
+206. Chop the green garlic
+207. Chop the chili peppers
+208. Slice the lotus root
+209. Slice the carrots
+210. Chop the onions
+211. Transfer all medium pipette tips from one rack to another holder for medium pipette tips
+212. Transfer all small pipette tips from one rack to another holder for small pipette tips
+213. Chop the orange
+215. Chop the potatoes
+216. Chop the cucumber into shreds
+217. Plug in the bulb holder to the socket
+218. Plug in the bulb holder to the socket, install the bulb, turn on the socket to light up the bulb
+222. Cover the pot with the lid
+223. Take the cups off the shelf and stack them together
+225. Put the bowl into the microwave
+329. Put the glass cup onto the shelf

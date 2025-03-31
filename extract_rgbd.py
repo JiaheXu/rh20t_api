@@ -617,6 +617,27 @@ def get_filtered_depth(rgb, depth, intrinsic, extrinsic, resized_intrinsic, resi
     # Convert NumPy array to Open3D format using Vector3dVector
     pcd.points = o3d.utility.Vector3dVector(xyz_2d)
     pcd.colors = o3d.utility.Vector3dVector(rgb_2d)
+    # visualize_pcd( pcd )
+
+    # xyz_ds = np.transpose(xyz, (2, 0, 1) ).astype(float)
+    # xyz_ds = xyz_ds.reshape(3, resized_img_size[0] // 8, 8, resized_img_size[1] // 8, 8)
+    # xyz_ds = np.transpose( xyz_ds, (0, 1, 3, 2, 4) ).mean(-1).mean(-1)
+    # xyz_ds = np.transpose(xyz_ds, (1, 2, 0) ).astype(float)
+
+    # rgb_ds = np.transpose(rgb, (2, 0, 1) ).astype(float)    
+    # rgb_ds = rgb_ds.reshape(3, resized_img_size[0] // 8, 8, resized_img_size[1] // 8, 8)
+    # rgb_ds = np.transpose( rgb_ds, (0, 1, 3, 2, 4) ).mean(-1).mean(-1)
+    # rgb_ds = np.transpose(rgb_ds, (1, 2, 0) ).astype(float)
+    
+    # xyz_ds_2d = xyz_ds.reshape( -1, 3)
+    # rgb_ds_2d = rgb_ds.reshape( -1, 3) / 255.0
+    # ds_pcd = o3d.geometry.PointCloud()
+    # # Convert NumPy array to Open3D format using Vector3dVector
+    # ds_pcd.points = o3d.utility.Vector3dVector(xyz_ds_2d)
+    # ds_pcd.colors = o3d.utility.Vector3dVector(rgb_ds_2d)
+    # visualize_pcd( ds_pcd )
+
+
 
     nb_neighbors = 200
     radius = 0.1
@@ -637,9 +658,10 @@ def get_filtered_depth(rgb, depth, intrinsic, extrinsic, resized_intrinsic, resi
     all_indices[ind] = True
     invalid_indices_2 = np.where( all_indices == False)
     xyz_2d[invalid_indices_2] = np.array([0., 0., 0.])
-    # clean_pcd = o3d.geometry.PointCloud()
-    # clean_pcd.points = o3d.utility.Vector3dVector(xyz_2d)
-    # clean_pcd.colors = o3d.utility.Vector3dVector(rgb_2d)
+    
+    clean_pcd = o3d.geometry.PointCloud()
+    clean_pcd.points = o3d.utility.Vector3dVector(xyz_2d)
+    clean_pcd.colors = o3d.utility.Vector3dVector(rgb_2d)
     # print("step2: ")
     # visualize_pcd( clean_pcd )
 
@@ -649,7 +671,27 @@ def get_filtered_depth(rgb, depth, intrinsic, extrinsic, resized_intrinsic, resi
     valid_map = valid_map.reshape( (xyz.shape[0], xyz.shape[1]) )
     filtered_depth = copy.deepcopy(depth)
     filtered_depth[ valid_map==False ] = 0.0
+
+    # xyz_clean = xyz_2d.reshape( (256,256,3) )
+    # xyz_ds = np.transpose(xyz_clean, (2, 0, 1) ).astype(float)
+    # xyz_ds = xyz_ds.reshape(3, resized_img_size[0] // 8, 8, resized_img_size[1] // 8, 8)
+    # xyz_ds = np.transpose( xyz_ds, (0, 1, 3, 2, 4) ).mean(-1).mean(-1)
+    # xyz_ds = np.transpose(xyz_ds, (1, 2, 0) ).astype(float)
+
+    # rgb_ds = np.transpose(rgb, (2, 0, 1) ).astype(float)    
+    # rgb_ds = rgb_ds.reshape(3, resized_img_size[0] // 8, 8, resized_img_size[1] // 8, 8)
+    # rgb_ds = np.transpose( rgb_ds, (0, 1, 3, 2, 4) ).mean(-1).mean(-1)
+    # rgb_ds = np.transpose(rgb_ds, (1, 2, 0) ).astype(float)
     
+    # xyz_ds_2d = xyz_ds.reshape( -1, 3)
+    # rgb_ds_2d = rgb_ds.reshape( -1, 3) / 255.0
+    # ds_pcd = o3d.geometry.PointCloud()
+    # # Convert NumPy array to Open3D format using Vector3dVector
+    # ds_pcd.points = o3d.utility.Vector3dVector(xyz_ds_2d)
+    # ds_pcd.colors = o3d.utility.Vector3dVector(rgb_ds_2d)
+    # visualize_pcd( ds_pcd )
+
+
     return rgb, filtered_depth
 
 def data_preprocess(scene_path:str, save_data_dir:str, idx: int, task_num: int, task_lang:str, goal_cams:list, vis_cfg:dict, train_set:bool, time_interval = 200): #, logger:Logger):
